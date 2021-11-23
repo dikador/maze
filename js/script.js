@@ -1,9 +1,13 @@
 $(document).ready(function () {
    let maze = [
-      [0, 1, 0, 1],
-      [0, 0, 0, 1],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0],
+      [0, 0, 0, 0, 1, 1, 1, 0, 1],
+      [1, 0, 1, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 0, 0, 0, 1, 0, 0],
+      [1, 0, 1, 0, 1, 0, 1, 1, 0],
+      [0, 0, 1, 0, 1, 0, 1, 0, 0],
+      [1, 0, 1, 1, 1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 1, 0, 1, 0, 0],
+
    ];
 
    let cords = [];
@@ -64,7 +68,7 @@ $(document).ready(function () {
                return current.concat([end]);
             }
 
-            if (direction[0] < 0 || direction[0] >= maze.length
+            if (direction[0] < 0 || direction[0] >= maze[0].length
                || direction[1] < 0 || direction[1] >= maze.length
                || maze[direction[1]][direction[0]] !== 0) {
 
@@ -75,75 +79,83 @@ $(document).ready(function () {
             queue.push(current.concat([direction]));
          }
       }
+
+      return alert("Пути нет")
    }
 
-   function buildPath(path) {
+   function addArrow(pathEl) {
+      let mazeLength = maze.length + maze[0].length - maze.length;
+
+      // Top arrow
+      if (maze[pathEl[1] - 1]?.[pathEl[0]] > maze[pathEl[1]]?.[pathEl[0]]) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('top')
+      }
+      // top-right arrow
+      if (maze[pathEl[1] + 1]?.[pathEl[0]] === maze[pathEl[1]]?.[pathEl[0]] - 1
+         && maze[pathEl[1]]?.[pathEl[0] + 1] > maze[pathEl[1]]?.[pathEl[0]]) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('topRight')
+      }
+      // top-left arrow
+      if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]]?.[pathEl[0] - 1] - 1 &&
+         maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] + 1]?.[pathEl[0]] + 1) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('topLeft')
+      }
+
+      // right arrow
+      if (maze[pathEl[1]][pathEl[0] + 1] > maze[pathEl[1]][pathEl[0]]) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('right')
+      }
+      // right-top arrow
+      if (maze[pathEl[1] - 1]?.[pathEl[0]] > maze[pathEl[1]][pathEl[0]] &&
+         maze[pathEl[1]]?.[pathEl[0] - 1] === maze[pathEl[1]][pathEl[0]] - 1) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('rightTop')
+      }
+      // right-bot arrow
+      if (maze[pathEl[1]]?.[pathEl[0] - 1] === maze[pathEl[1]][pathEl[0]] - 1 &&
+         maze[pathEl[1] + 1]?.[pathEl[0]] > maze[pathEl[1]][pathEl[0]]) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('rightBot')
+      }
+
+      // left arrow
+      if (maze[pathEl[1]]?.[pathEl[0] - 1] > maze[pathEl[1]][pathEl[0]]) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('left')
+      }
+      // left-top arrow
+      if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]][pathEl[0] + 1] + 1 &&
+         maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] - 1]?.[pathEl[0]] - 1) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('leftTop')
+      }
+      // left-bot arrow
+      if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] + 1]?.[pathEl[0]] - 1 &&
+         maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]]?.[pathEl[0] + 1] + 1) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('leftBot')
+      }
+
+      // bottom arrow
+      if (maze[pathEl[1] + 1]?.[pathEl[0]] > maze[pathEl[1]][pathEl[0]]) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('bot')
+      }
+      // bot-right arrow
+      if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] - 1]?.[pathEl[0]] + 1 &&
+         maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]]?.[pathEl[0] + 1] - 1) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('botRight')
+      }
+      // bot-left arrow
+      if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] - 1]?.[pathEl[0]] + 1 &&
+         maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]]?.[pathEl[0] - 1] - 1) {
+         $($('.maze__item')[pathEl[0] + pathEl[1] * mazeLength]).addClass('botLeft')
+      }
+   }
+
+   async function buildPath(path) {
       for (let i = 0; i < path.length; i++) {
          const pathEl = path[i];
 
-
-         // Top arrow
-         if (maze[pathEl[1] - 1]?.[pathEl[0]] > maze[pathEl[1]]?.[pathEl[0]]) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('top')
-         }
-         // top-right arrow
-         if (maze[pathEl[1] + 1]?.[pathEl[0]] === maze[pathEl[1]]?.[pathEl[0]] - 1
-            && maze[pathEl[1]]?.[pathEl[0] + 1] > maze[pathEl[1]]?.[pathEl[0]]) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('topRight')
-         }
-         // top-left arrow
-         if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]]?.[pathEl[0] - 1] - 1 &&
-            maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] + 1]?.[pathEl[0]] + 1) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('topLeft')
-         }
-
-
-         // right arrow
-         if (maze[pathEl[1]][pathEl[0] + 1] > maze[pathEl[1]][pathEl[0]]) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('right')
-         }
-         // right-top arrow
-         if (maze[pathEl[1] - 1]?.[pathEl[0]] > maze[pathEl[1]][pathEl[0]] &&
-            maze[pathEl[1]]?.[pathEl[0] - 1] === maze[pathEl[1]][pathEl[0]] - 1) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('rightTop')
-         }
-         // right-bot arrow
-         if (maze[pathEl[1]]?.[pathEl[0] - 1] === maze[pathEl[1]][pathEl[0]] - 1 &&
-            maze[pathEl[1] + 1]?.[pathEl[0]] > maze[pathEl[1]][pathEl[0]]) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('rightBot')
-         }
-
-
-         // left arrow
-         if (maze[pathEl[1]]?.[pathEl[0] - 1] > maze[pathEl[1]][pathEl[0]]) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('left')
-         }
-         // left-top arrow
-         if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]][pathEl[0] + 1] + 1 &&
-            maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] - 1][pathEl[0]] - 1) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('leftTop')
-         }
-         // left-bot arrow
-         if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] + 1]?.[pathEl[0]] - 1 &&
-            maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]]?.[pathEl[0] + 1] + 1) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('leftBot')
-         }
-
-
-         // bottom arrow
-         if (maze[pathEl[1] + 1]?.[pathEl[0]] > maze[pathEl[1]][pathEl[0]]) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('bot')
-         }
-         // bot-right arrow
-         if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] - 1]?.[pathEl[0]] + 1 &&
-            maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]]?.[pathEl[0] + 1] - 1) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('botRight')
-         }
-         // bot-left arrow
-         if (maze[pathEl[1]][pathEl[0]] === maze[pathEl[1] - 1]?.[pathEl[0]] + 1 &&
-            maze[pathEl[1]][pathEl[0]] === maze[pathEl[1]]?.[pathEl[0] - 1] - 1) {
-            $($('.maze__item')[pathEl[0] + pathEl[1] * maze.length]).addClass('botLeft')
-         }
+         await new Promise(resolve => {
+            setTimeout(() => {
+               resolve(addArrow(pathEl));
+            }, 300)
+         })
       }
    }
 
@@ -156,8 +168,15 @@ $(document).ready(function () {
          $(this).addClass("start");
          cords.push([$(this).data("x"), $(this).data("y")]);
       } else if (counter === 2) {
-         $(this).addClass("finish");
          cords.push([$(this).data("x"), $(this).data("y")]);
+
+         if (cords[0][0] === cords[1][0] && cords[0][1] === cords[1][1]) {
+            cords.pop();
+            counter--;
+            return alert('Старт и финишь на одной клетке')
+         }
+
+         $(this).addClass("finish");
 
          const path = findPath(cords[0], cords[1]);
          buildPath(path)

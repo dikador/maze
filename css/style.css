@@ -100,19 +100,30 @@ body {
    display: flex;
    justify-content: center;
    align-items: center;
+   flex-direction: column;
+}
+
+.wrapper h1 {
+   margin-bottom: 30px;
+   max-width: 600px;
+   text-align: center;
+   font-size: 32px;
+   line-height: 1.2em;
 }
 
 .maze {
    display: grid;
+   padding: 0px 30px;
    /* grid-template-columns: repeat(4, 25%); */
 }
 
 .maze__item {
-   width: 100px;
-   height: 100px;
+   width: 80px;
+   height: 80px;
    border: 1px solid #3e3e3e;
    cursor: pointer;
    position: relative;
+   transition: 0.2s;
 }
 
 .maze__item.maze-block {
